@@ -6,7 +6,7 @@ const kBlue = Color(0xff585CE5);
 const kWhite = Color(0xffffffff);
 const kSkimColor = Colors.white60;
 const kBlack = Color(0xff000000);
-const kPink = Color(0xff27ae60);
+const kPink = Color(0xffD400C9);
 const kYellow = Color(0xffFDD638);
 const noColor = Colors.transparent;
 

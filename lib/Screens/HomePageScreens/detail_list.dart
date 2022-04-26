@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:store/Screens/HomePageScreens/detail_list.dart';
-import 'package:store/utils/app_routes.dart';
-import 'package:store/utils/colors.dart';
+import 'package:store/widgets/DetailListWidgets/detail_cards.dart';
 
-class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({Key? key}) : super(key: key);
+import '../../utils/app_routes.dart';
+import '../../utils/colors.dart';
+
+class DetailList extends StatelessWidget {
+  const DetailList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kPink,
+      backgroundColor: kPink.withOpacity(0.7),
       // extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: noColor,
         elevation: 0,
         title: const Text(
-          "Categories",
+          "Detail",
           style: TextStyle(color: kWhite),
         ),
         centerTitle: true,
@@ -67,34 +68,13 @@ class CategoriesScreen extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 5,
-                    childAspectRatio: 16 / 18,
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 16 / 21,
                     mainAxisSpacing: 20),
                 itemCount: 25,
                 itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () => KRoutes().push(context, const DetailList()),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 10),
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: kGrey.withOpacity(0.4),
-                          ),
-                          height: 90,
-                          child: Image.asset(
-                            "assets/vegetable.png",
-                            width: 70,
-                          ),
-                        ),
-                        const Text("Vegetables")
-                      ],
-                    ),
-                  );
+                  return const DetailCards();
                 },
               ),
             ),

@@ -77,9 +77,6 @@ class _HomePageState extends State<HomePage> {
                           height: 120,
                           image: "assets/meat.png",
                         ),
-                        SizedBox(
-                          height: 100,
-                        )
                       ],
                     ),
                   ),

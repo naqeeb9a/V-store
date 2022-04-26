@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:store/utils/colors.dart';
 
 class CustomText extends StatelessWidget {
   final String text;
@@ -10,8 +11,8 @@ class CustomText extends StatelessWidget {
   const CustomText(
       {Key? key,
       required this.text,
-      required this.textColor,
-      required this.fontSize,
+      this.textColor = kBlack,
+      this.fontSize = 15,
       this.alignText = TextAlign.center,
       this.maxLines = 2,
       this.fontWeight = FontWeight.normal})
