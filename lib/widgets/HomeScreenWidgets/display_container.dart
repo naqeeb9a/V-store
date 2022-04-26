@@ -56,7 +56,7 @@ class DisplayContainer extends StatelessWidget {
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color: kPink.withOpacity(0.1),
+                        color: kGrey.withOpacity(0.3),
                       ),
                       height: height,
                       width: width,

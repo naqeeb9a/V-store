@@ -9,7 +9,7 @@ class CategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kPink,
+      backgroundColor: kPink.withOpacity(0.7),
       // extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: noColor,
