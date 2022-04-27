@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:store/utils/colors.dart';
 
-import '../utils/dynamic_sizes.dart';
-
-
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback function;
@@ -30,11 +27,9 @@ class CustomButton extends StatelessWidget {
       height: height,
       minWidth: minWidth,
       color: color,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
-          Radius.circular(
-            KSizes().dynamicWidth(context, 1),
-          ),
+          Radius.circular(10),
         ),
       ),
       onPressed: function,

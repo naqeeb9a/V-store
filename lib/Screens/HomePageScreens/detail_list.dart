@@ -10,7 +10,7 @@ class DetailList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kPink.withOpacity(0.7),
+      backgroundColor: kPink,
       // extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: noColor,

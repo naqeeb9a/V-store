@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:store/Screens/Cart/cart.dart';
 import 'package:store/Screens/HomePageScreens/detail_list.dart';
 import 'package:store/utils/app_routes.dart';
 import 'package:store/utils/colors.dart';
@@ -9,7 +10,7 @@ class CategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kPink.withOpacity(0.7),
+      backgroundColor: kPink,
       // extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: noColor,
@@ -39,7 +40,9 @@ class CategoriesScreen extends StatelessWidget {
                     color: kPink,
                   ),
                   elevation: 0.1,
-                  onPressed: () {}),
+                  onPressed: () {
+                    KRoutes().push(context, const Cart());
+                  }),
             ),
           ),
         ],

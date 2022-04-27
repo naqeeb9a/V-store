@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:store/utils/app_routes.dart';
 
 import '../utils/colors.dart';
 
-
 class BaseAppBar extends StatelessWidget with PreferredSizeWidget {
   final Color backgroundColor;
-  final Text title;
+  final String title;
   final AppBar appBar;
   final bool automaticallyImplyLeading;
   final List<Widget> widgets;
@@ -28,10 +28,21 @@ class BaseAppBar extends StatelessWidget with PreferredSizeWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: AppBar(
+        backgroundColor: noColor,
         elevation: 0,
-        title: title,
+        title: Text(
+          title,
+          style: const TextStyle(color: kWhite),
+        ),
         automaticallyImplyLeading: automaticallyImplyLeading,
-        backgroundColor: backgroundColor,
+        centerTitle: true,
+        leading: InkWell(
+          onTap: () => KRoutes().pop(context),
+          child: const Icon(
+            Icons.arrow_back_ios,
+            size: 15,
+          ),
+        ),
         actions: widgets,
       ),
     );

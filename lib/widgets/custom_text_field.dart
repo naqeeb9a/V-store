@@ -19,7 +19,7 @@ class CustomTextField extends StatefulWidget {
     required this.controller,
     required this.label,
     required this.hintText,
-    required this.keyboardType,
+    this.keyboardType = TextInputType.text,
     this.isPassword = false,
     this.enable = true,
     required this.suffixIcon,
@@ -50,6 +50,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       ),
       validator: widget.function,
       decoration: InputDecoration(
+        fillColor: kGrey,
+        filled: true,
         suffixIcon: InkWell(
           onTap: widget.isPassword
               ? () {
@@ -72,7 +74,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           borderSide: const BorderSide(
             width: 2,
-            color: kWhite,
+            color: kPink,
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -81,7 +83,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           borderSide: const BorderSide(
             width: 2,
-            color: kWhite,
+            color: kPink,
           ),
         ),
         border: OutlineInputBorder(
@@ -90,7 +92,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           borderSide: const BorderSide(
             width: 2,
-            color: kWhite,
+            color: kPink,
           ),
         ),
       ),

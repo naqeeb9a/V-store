@@ -88,7 +88,7 @@ class _DetailCardsState extends State<DetailCards> {
                       onTap: () {
                         setState(() {
                           buttonHeigth = 70;
-                          Future.delayed(const Duration(milliseconds: 600), () {
+                          Future.delayed(const Duration(milliseconds: 700), () {
                             setState(() {
                               isVisible = true;
                             });
