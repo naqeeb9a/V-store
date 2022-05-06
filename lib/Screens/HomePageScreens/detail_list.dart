@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:store/widgets/DetailListWidgets/detail_cards.dart';
 
 import '../../utils/app_routes.dart';
@@ -64,18 +65,28 @@ class DetailList extends StatelessWidget {
                 color: kWhite,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: GridView.builder(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 16 / 21,
-                    mainAxisSpacing: 20),
-                itemCount: 25,
-                itemBuilder: (BuildContext context, int index) {
-                  return const DetailCards();
-                },
+              child: AnimationLimiter(
+                child: GridView.builder(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      childAspectRatio: 16 / 21,
+                      mainAxisSpacing: 20),
+                  itemCount: 25,
+                  itemBuilder: (BuildContext context, int index) {
+                    return AnimationConfiguration.staggeredGrid(
+                        position: index,
+                        columnCount: 2,
+                        child: ScaleAnimation(
+                          child: FadeInAnimation(
+                              child: DetailCards(
+                            heroTag: index,
+                          )),
+                        ));
+                  },
+                ),
               ),
             ),
           ),

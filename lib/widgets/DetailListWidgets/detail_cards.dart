@@ -6,7 +6,8 @@ import 'package:store/widgets/custom_text.dart';
 import '../../utils/colors.dart';
 
 class DetailCards extends StatefulWidget {
-  const DetailCards({Key? key}) : super(key: key);
+  final int heroTag;
+  const DetailCards({Key? key, required this.heroTag}) : super(key: key);
 
   @override
   State<DetailCards> createState() => _DetailCardsState();
@@ -15,6 +16,7 @@ class DetailCards extends StatefulWidget {
 class _DetailCardsState extends State<DetailCards> {
   bool isVisible = false;
   double buttonHeigth = 30;
+  int quantity = 0;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -22,16 +24,23 @@ class _DetailCardsState extends State<DetailCards> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         InkWell(
-          onTap: () => KRoutes().push(context, const DetailPage()),
+          onTap: () => KRoutes().push(
+              context,
+              DetailPage(
+                heroTag: widget.heroTag,
+              )),
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: kGrey.withOpacity(0.3),
             ),
-            child: Image.asset(
-              "assets/meat.png",
-              fit: BoxFit.cover,
+            child: Hero(
+              tag: widget.heroTag,
+              child: Image.asset(
+                "assets/meat.png",
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         ),
@@ -64,10 +73,16 @@ class _DetailCardsState extends State<DetailCards> {
                   children: [
                     InkWell(
                       onTap: () {
-                        setState(() {
-                          isVisible = false;
-                          buttonHeigth = 30;
-                        });
+                        if (quantity > 1) {
+                          setState(() {
+                            quantity--;
+                          });
+                        } else {
+                          setState(() {
+                            isVisible = false;
+                            buttonHeigth = 30;
+                          });
+                        }
                       },
                       child: Visibility(
                           visible: isVisible,
@@ -78,8 +93,8 @@ class _DetailCardsState extends State<DetailCards> {
                     ),
                     Visibility(
                       visible: isVisible,
-                      child: const CustomText(
-                        text: "2",
+                      child: CustomText(
+                        text: "$quantity",
                         textColor: kWhite,
                         fontSize: 15,
                       ),
@@ -87,6 +102,7 @@ class _DetailCardsState extends State<DetailCards> {
                     InkWell(
                       onTap: () {
                         setState(() {
+                          quantity++;
                           buttonHeigth = 70;
                           Future.delayed(const Duration(milliseconds: 700), () {
                             setState(() {

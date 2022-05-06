@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:store/utils/app_routes.dart';
 import 'package:store/utils/colors.dart';
+import 'package:store/widgets/custom_button.dart';
 import 'package:store/widgets/widgets.dart';
 
 class DetailPage extends StatelessWidget {
-  const DetailPage({Key? key}) : super(key: key);
+  final int heroTag;
+  const DetailPage({Key? key, required this.heroTag}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +29,12 @@ class DetailPage extends StatelessWidget {
                     color: kWhite,
                   ),
                 )),
-            Image.asset(
-              "assets/meat.png",
-              width: 250,
+            Hero(
+              tag: heroTag,
+              child: Image.asset(
+                "assets/meat.png",
+                width: 250,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 200),
@@ -45,6 +50,7 @@ class DetailPage extends StatelessWidget {
                     color: kGrey,
                   ),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
                         padding: const EdgeInsets.all(20),
@@ -111,9 +117,6 @@ class DetailPage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
@@ -136,10 +139,17 @@ class DetailPage extends StatelessWidget {
                               child: const Text(
                                   "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
                                   textAlign: TextAlign.left),
-                            )
+                            ),
                           ],
                         ),
                       ),
+                      CustomButton(
+                        text: "Add to cart",
+                        function: () {},
+                        color: kPink,
+                        height: 50,
+                        minWidth: double.infinity,
+                      )
                     ],
                   ),
                 ),

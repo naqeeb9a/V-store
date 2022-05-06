@@ -65,17 +65,12 @@ class _HomePageState extends State<HomePage> {
                         DisplayContainer(
                           text: "Categories",
                           text1: "See all",
-                          text2: "Vegetables",
-                          image: "assets/vegetable.png",
                         ),
                         DisplaySlider(),
                         DisplayContainer(
                           text: "Popular deals",
-                          text2: "Meat",
                           text1: "See all",
-                          width: 150,
-                          height: 120,
-                          image: "assets/meat.png",
+                         
                         ),
                       ],
                     ),

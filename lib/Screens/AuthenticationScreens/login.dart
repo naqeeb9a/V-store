@@ -91,6 +91,7 @@ class _LoginState extends State<Login> {
                             hintText: "",
                             prefixIcon: const SizedBox(),
                             suffixIcon: const SizedBox(),
+                            boundaryColor: kPink,
                           ),
                           const SizedBox(
                             height: 20,
@@ -102,6 +103,7 @@ class _LoginState extends State<Login> {
                             hintText: "",
                             prefixIcon: const SizedBox(),
                             suffixIcon: const SizedBox(),
+                            boundaryColor: kPink,
                           ),
                           const SizedBox(
                             height: 10,

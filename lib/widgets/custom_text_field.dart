@@ -13,6 +13,7 @@ class CustomTextField extends StatefulWidget {
   final Widget prefixIcon;
   final VoidCallback? prefixIconFunction;
   final String? Function(String?)? function;
+  final Color boundaryColor;
 
   const CustomTextField({
     Key? key,
@@ -27,6 +28,7 @@ class CustomTextField extends StatefulWidget {
     this.suffixIconFunction,
     this.prefixIconFunction,
     this.function,
+    this.boundaryColor = noColor,
   }) : super(key: key);
 
   @override
@@ -50,8 +52,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
       ),
       validator: widget.function,
       decoration: InputDecoration(
-        fillColor: kGrey,
-        filled: true,
         suffixIcon: InkWell(
           onTap: widget.isPassword
               ? () {
@@ -72,27 +72,27 @@ class _CustomTextFieldState extends State<CustomTextField> {
           borderRadius: BorderRadius.circular(
             20,
           ),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             width: 2,
-            color: kPink,
+            color: widget.boundaryColor,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(
             20,
           ),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             width: 2,
-            color: kPink,
+            color: widget.boundaryColor,
           ),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(
             20,
           ),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             width: 2,
-            color: kPink,
+            color: widget.boundaryColor,
           ),
         ),
       ),

@@ -1,8 +1,9 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:store/Screens/AuthenticationScreens/login.dart';
+import 'package:store/Screens/SelectionScreen/selection_screen.dart';
 import 'package:store/provider/cart_provider.dart';
+import 'package:store/provider/store_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => CartProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => StoreProvider(),
+        ),
       ],
       child: MaterialApp(
         title: 'store',
@@ -33,7 +37,7 @@ class MyApp extends StatelessWidget {
             },
           ),
         ),
-        home: const Login(),
+        home: const SelectionScreen(),
       ),
     );
   }

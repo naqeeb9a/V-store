@@ -79,6 +79,7 @@ class _SignUpState extends State<SignUp> {
                             hintText: "",
                             prefixIcon: const SizedBox(),
                             suffixIcon: const SizedBox(),
+                            boundaryColor: kPink,
                           ),
                           const SizedBox(
                             height: 20,
@@ -89,6 +90,7 @@ class _SignUpState extends State<SignUp> {
                             hintText: "",
                             prefixIcon: const SizedBox(),
                             suffixIcon: const SizedBox(),
+                            boundaryColor: kPink,
                           ),
                           const SizedBox(
                             height: 20,
@@ -100,6 +102,7 @@ class _SignUpState extends State<SignUp> {
                             hintText: "",
                             prefixIcon: const SizedBox(),
                             suffixIcon: const SizedBox(),
+                            boundaryColor: kPink,
                           ),
                         ],
                       ),
@@ -170,14 +173,17 @@ class _SignUpState extends State<SignUp> {
                       const SizedBox(
                         height: 20,
                       ),
-                      RichText(
-                          text: const TextSpan(children: [
-                        TextSpan(
-                            text: "Already have an account? ",
-                            style: TextStyle(color: kBlack)),
-                        TextSpan(
-                            text: "Sign In", style: TextStyle(color: kPink))
-                      ]))
+                      InkWell(
+                        onTap: () => KRoutes().pop(context),
+                        child: RichText(
+                            text: const TextSpan(children: [
+                          TextSpan(
+                              text: "Already have an account? ",
+                              style: TextStyle(color: kBlack)),
+                          TextSpan(
+                              text: "Sign In", style: TextStyle(color: kPink))
+                        ])),
+                      )
                     ],
                   ),
                 )

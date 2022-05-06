@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:store/Screens/add_addresses.dart';
+import 'package:store/Screens/Cart/add_addresses.dart';
 import 'package:store/provider/cart_provider.dart';
 import 'package:store/utils/app_routes.dart';
 import 'package:store/utils/colors.dart';

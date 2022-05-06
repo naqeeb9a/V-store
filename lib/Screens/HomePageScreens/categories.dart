@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:provider/provider.dart';
 import 'package:store/Screens/Cart/cart.dart';
 import 'package:store/Screens/HomePageScreens/detail_list.dart';
+import 'package:store/provider/store_provider.dart';
 import 'package:store/utils/app_routes.dart';
 import 'package:store/utils/colors.dart';
+import 'package:store/utils/data.dart';
 
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var selectedStore = Provider.of<StoreProvider>(context).store;
     return Scaffold(
       backgroundColor: kPink,
       // extendBodyBehindAppBar: true,
@@ -66,43 +71,63 @@ class CategoriesScreen extends StatelessWidget {
                 color: kWhite,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: GridView.builder(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 5,
-                    childAspectRatio: 16 / 18,
-                    mainAxisSpacing: 20),
-                itemCount: 25,
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () => KRoutes().push(context, const DetailList()),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 10),
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: kGrey.withOpacity(0.4),
-                          ),
-                          height: 90,
-                          child: Image.asset(
-                            "assets/vegetable.png",
-                            width: 70,
-                          ),
-                        ),
-                        const Text("Vegetables")
-                      ],
-                    ),
-                  );
-                },
+              child: AnimationLimiter(
+                child: GridView.builder(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 5,
+                      childAspectRatio: 16 / 19,
+                      mainAxisSpacing: 20),
+                  itemCount: categoriesList[selectedStore].length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return AnimationConfiguration.staggeredGrid(
+                        position: index,
+                        columnCount: 3,
+                        child: ScaleAnimation(
+                          child: FadeInAnimation(
+                              child: categoriesSmallCards(
+                            context,
+                            categoriesList[selectedStore][index]["name"],
+                            categoriesList[selectedStore][index]["image"],
+                          )),
+                        ));
+                  },
+                ),
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  categoriesSmallCards(context, text, image) {
+    return InkWell(
+      onTap: () => KRoutes().push(context, const DetailList()),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: kGrey.withOpacity(0.4),
+            ),
+            height: 90,
+            child: Image.asset(
+              image,
+              width: 100,
+            ),
+          ),
+          Text(text,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center)
+        ],
       ),
     );
   }
