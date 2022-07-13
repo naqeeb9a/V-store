@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class CustomLoader extends StatelessWidget {
-  const CustomLoader({ Key? key }) : super(key: key);
+  const CustomLoader({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return LottieBuilder.asset(
-      "assets/loader.json"
+      "assets/loader.json",
+      width: 100,
     );
   }
 }

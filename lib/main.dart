@@ -1,9 +1,12 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:store/Screens/SelectionScreen/selection_screen.dart';
+import 'package:store/Screens/IntroScreens/intro.dart';
 import 'package:store/provider/cart_provider.dart';
 import 'package:store/provider/store_provider.dart';
+import 'package:store/provider/user_data_provider.dart';
+import 'package:store/utils/colors.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,17 +21,21 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => CartProvider(),
+          create: (context) => CartProvider(cartItems: []),
         ),
         ChangeNotifierProvider(
           create: (context) => StoreProvider(),
         ),
+        ChangeNotifierProvider(create: (context) => UserDataProvider())
       ],
       child: MaterialApp(
         title: 'store',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData.from(
-          colorScheme: const ColorScheme.light(),
-        ).copyWith(
+            colorScheme: ColorScheme.light(primary: kDarkPurple),
+            textTheme: GoogleFonts.poppinsTextTheme(
+              Theme.of(context).textTheme,
+            )).copyWith(
           pageTransitionsTheme: const PageTransitionsTheme(
             builders: <TargetPlatform, PageTransitionsBuilder>{
               TargetPlatform.android: SharedAxisPageTransitionsBuilder(
@@ -37,7 +44,7 @@ class MyApp extends StatelessWidget {
             },
           ),
         ),
-        home: const SelectionScreen(),
+        home: const OnBoardingPage(),
       ),
     );
   }

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
-const kDarkPurple = Color(0xff4D50D2);
+var kDarkPurple = const Color(0xffD400C9);
 const kGrey = Color(0xffDCDCDC);
 const kBlue = Color(0xff585CE5);
 const kWhite = Color(0xffffffff);
-const kSkimColor = Colors.white60;
 const kBlack = Color(0xff000000);
 const kPink = Color(0xffD400C9);
-const kYellow = Color(0xffFDD638);
+const kFreshColor = Color(0xff00b761);
+const kBeautyColor = Color(0xff9400d3);
+const kDocColor = Color(0xff00008b);
+const kFreezeColor = Color.fromARGB(255, 0, 135, 180);
 const noColor = Colors.transparent;
 
 const MaterialColor primaryColor = MaterialColor(

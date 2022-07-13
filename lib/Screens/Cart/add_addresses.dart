@@ -72,8 +72,7 @@ class _AddAddressState extends State<AddAddress> {
                           ),
                           CustomTextField(
                             controller: _state,
-                            label: "State",
-                            hintText: "",
+                            hintText: "State",
                             prefixIcon: const SizedBox(),
                             suffixIcon: const SizedBox(),
                           ),
@@ -82,8 +81,7 @@ class _AddAddressState extends State<AddAddress> {
                           ),
                           CustomTextField(
                             controller: _city,
-                            label: "City",
-                            hintText: "",
+                            hintText: "City",
                             prefixIcon: const SizedBox(),
                             suffixIcon: const SizedBox(),
                           ),
@@ -92,8 +90,7 @@ class _AddAddressState extends State<AddAddress> {
                           ),
                           CustomTextField(
                             controller: _address,
-                            label: "Address",
-                            hintText: "",
+                            hintText: "Address",
                             prefixIcon: const SizedBox(),
                             suffixIcon: const SizedBox(),
                           ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:lottie/lottie.dart';
 import 'package:store/Screens/Cart/add_addresses.dart';
-import 'package:store/provider/cart_provider.dart';
 import 'package:store/utils/app_routes.dart';
 import 'package:store/utils/colors.dart';
 import 'package:store/widgets/widgets.dart';
@@ -13,7 +12,7 @@ class CheckOut extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List? cartItems = Provider.of<CartProvider>(context).cartItems;
+    // List? cartItems = Provider.of<CartProvider>(context).cartItems;
     return Scaffold(
       backgroundColor: kPink,
       // extendBodyBehindAppBar: true,
@@ -44,75 +43,77 @@ class CheckOut extends StatelessWidget {
                         color: kWhite,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: cartItems == null
-                          ? Column(
+                      child:
+                          // cartItems == null
+                          // ? Column(
+                          //     children: [
+                          //       Padding(
+                          //         padding: const EdgeInsets.only(
+                          //             top: 20, left: 20, right: 20),
+                          //         child: Row(
+                          //           mainAxisAlignment:
+                          //               MainAxisAlignment.spaceBetween,
+                          //           children: [
+                          //             const CustomText(
+                          //               text: "Addresses",
+                          //               fontWeight: FontWeight.bold,
+                          //             ),
+                          //             GestureDetector(
+                          //               onTap: () {
+                          //                 KRoutes().push(
+                          //                     context, const AddAddress());
+                          //               },
+                          //               child: const CustomText(
+                          //                 text: "Add new",
+                          //                 textColor: kPink,
+                          //               ),
+                          //             )
+                          //           ],
+                          //         ),
+                          //       ),
+                          //       const Divider(
+                          //         color: kBlack,
+                          //       ),
+                          //       const Spacer(),
+                          //       const Center(
+                          //         child:
+                          //             Text("No addresses added at this point"),
+                          //       ),
+                          //       const Spacer(),
+                          //     ],
+                          //   )
+                          // :
+                          Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 20, left: 20, right: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 20, left: 20, right: 20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const CustomText(
-                                        text: "Addresses",
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          KRoutes().push(
-                                              context, const AddAddress());
-                                        },
-                                        child: const CustomText(
-                                          text: "Add new",
-                                          textColor: kPink,
-                                        ),
-                                      )
-                                    ],
+                                const CustomText(text: "Addresses"),
+                                GestureDetector(
+                                  onTap: () {
+                                    KRoutes().push(context, const AddAddress());
+                                  },
+                                  child: const CustomText(
+                                    text: "Add new",
+                                    textColor: kPink,
                                   ),
-                                ),
-                                const Divider(
-                                  color: kBlack,
-                                ),
-                                const Spacer(),
-                                const Center(
-                                  child:
-                                      Text("No addresses added at this point"),
-                                ),
-                                const Spacer(),
+                                )
                               ],
-                            )
-                          : Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 20, left: 20, right: 20),
-                                  child: Row(
-                                    children: [
-                                      const CustomText(text: "Addresses"),
-                                      GestureDetector(
-                                        onTap: () {
-                                          KRoutes().push(
-                                              context, const AddAddress());
-                                        },
-                                        child: const CustomText(
-                                          text: "Add new",
-                                          textColor: kPink,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                const Divider(
-                                  color: kBlack,
-                                ),
-                                Column(
-                                  children: cartItems
-                                      .map((e) => Container())
-                                      .toList(),
-                                ),
-                              ],
-                            )),
+                            ),
+                          ),
+                          const Divider(
+                            color: kBlack,
+                          ),
+                          Column(
+                            children: [1, 0]
+                                .map((e) => addressListWidget(isSelected: e))
+                                .toList(),
+                          ),
+                        ],
+                      )),
                 ),
                 Container(
                   decoration: const BoxDecoration(
@@ -135,10 +136,13 @@ class CheckOut extends StatelessWidget {
                                   content: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Container(
+                                        SizedBox(
                                           height: 300,
                                           width: double.infinity,
-                                          color: kYellow,
+                                          child: LottieBuilder.asset(
+                                            "assets/order.json",
+                                            repeat: false,
+                                          ),
                                         ),
                                         const SizedBox(
                                           height: 20,
@@ -184,6 +188,24 @@ class CheckOut extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget addressListWidget({isSelected = 0}) {
+    return Container(
+      padding: const EdgeInsets.all(5),
+      margin: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          border: Border.all(width: 0.5, color: kBlack),
+          borderRadius: BorderRadius.circular(10)),
+      child: RadioListTile(
+        value: 1,
+        groupValue: isSelected,
+        onChanged: (value) {},
+        title:
+            const CustomText(text: "house no 98, street 4, model town, lahore"),
+        subtitle: const CustomText(text: "+92332455543"),
       ),
     );
   }

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CartProvider extends ChangeNotifier {
-  List? cartItems;
-  CartProvider({this.cartItems});
+  List cartItems;
+  CartProvider({required this.cartItems});
   updateCartItems(value) {
-    cartItems!.add(value);
-    ChangeNotifier();
+    cartItems.add(value);
+    notifyListeners();
   }
 
-  removeItemFromCart(int index) {
-    cartItems!.removeAt(index);
-    ChangeNotifier();
+  removeItemFromCart(value) {
+    cartItems.remove(value);
+    notifyListeners();
   }
 }

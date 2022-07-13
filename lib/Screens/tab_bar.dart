@@ -1,11 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+
+import 'package:store/Screens/HomePageScreens/Categories/categories.dart';
+
 import 'package:store/Screens/HomePageScreens/home_page.dart';
 import 'package:store/Screens/ProfileScreen/profile.dart';
-import 'package:store/Screens/messages.dart';
+import 'package:store/Screens/notification.dart';
 import 'package:store/utils/colors.dart';
-
-import 'OrderScreen/order_screen.dart';
 
 class CustomTabBar extends StatefulWidget {
   const CustomTabBar({Key? key}) : super(key: key);
@@ -15,62 +17,89 @@ class CustomTabBar extends StatefulWidget {
 }
 
 class _CustomTabBarState extends State<CustomTabBar> {
-  //list of screen to display through navigation bar
+  final PersistentTabController _controller =
+      PersistentTabController(initialIndex: 0);
 
-  List<Widget> screens = [
-    const HomePage(),
-    const OrdersScreen(),
-    const MessagesScreen(),
-    const Profile()
-  ];
+  //list of screen to display through navigation bar
+  List<Widget> _buildScreens() {
+    return [
+      const HomePage(),
+      const CategoriesScreen(),
+      const NotificationsScreen(),
+      const Profile()
+    ];
+  }
 
   //This index will indicate the selected index of the bottom nav bar
 
-  int _selectedIndex = 0;
-  setBottomBarIndex(index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  List<PersistentBottomNavBarItem> _navBarsItems() {
+    return [
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.house_alt),
+        title: ("Home"),
+        iconSize: 20,
+        activeColorPrimary: kDarkPurple,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.list_bullet),
+        title: ("Settings"),
+        iconSize: 20,
+        activeColorPrimary: kDarkPurple,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.bell),
+        title: ("Home"),
+        iconSize: 20,
+        activeColorPrimary: kDarkPurple,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.person),
+        title: ("Settings"),
+        iconSize: 20,
+        activeColorPrimary: kDarkPurple,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: SnakeNavigationBar.color(
-        behaviour: SnakeBarBehaviour.floating,
-        snakeShape: SnakeShape.circle,
-        snakeViewColor: kPink,
-        selectedItemColor: kWhite,
-        unselectedItemColor: Colors.blueGrey,
-        showUnselectedLabels: false,
-        showSelectedLabels: false,
-        currentIndex: _selectedIndex,
-        onTap: (index) => setState(() => _selectedIndex = index),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'calendar'),
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'home'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'microphone'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.notifications), label: 'search')
-        ],
+    return PersistentTabView(
+      context,
+      controller: _controller,
+      navBarHeight: 50,
+      screens: _buildScreens(),
+      items: _navBarsItems(),
+      bottomScreenMargin: 50,
+      backgroundColor: Colors.white, // Default is Colors.white.
+      handleAndroidBackButtonPress: true, // Default is true.
+      resizeToAvoidBottomInset:
+          true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+      stateManagement: true, // Default is true.
+      hideNavigationBarWhenKeyboardShows:
+          true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+      decoration: NavBarDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        colorBehindNavBar: Colors.white,
       ),
-      body: Stack(
-          children: screens // this variable screens have all the three screens
-              .asMap() // this will read this screen variable as map
-              .map(
-                // this will map all items from the screens variable
-                (kNum, widget) => MapEntry(
-                  kNum,
-                  Offstage(
-                    offstage: _selectedIndex != kNum,
-                    //this will check if the selected icon on the navigation bar is not equal to provided number and will hide the screen behind
-                    child:
-                        widget, //this will build the child wigdet coming from screens variable one by one
-                  ),
-                ),
-              )
-              .values
-              .toList()),
+      popAllScreensOnTapOfSelectedTab: true,
+      popActionScreens: PopActionScreensType.all,
+      itemAnimationProperties: const ItemAnimationProperties(
+        // Navigation Bar's items animation properties.
+        duration: Duration(milliseconds: 200),
+        curve: Curves.ease,
+      ),
+      screenTransitionAnimation: const ScreenTransitionAnimation(
+        // Screen transition animation on change of selected tab.
+        animateTabTransition: true,
+        curve: Curves.ease,
+        duration: Duration(milliseconds: 200),
+      ),
+      navBarStyle:
+          NavBarStyle.style12, // Choose the nav bar style with this property.
     );
   }
 }

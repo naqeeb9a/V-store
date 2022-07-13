@@ -7,9 +7,10 @@ class BaseAppBar extends StatelessWidget with PreferredSizeWidget {
   final Color backgroundColor;
   final String title;
   final AppBar appBar;
-  final bool automaticallyImplyLeading;
+  final bool automaticallyImplyLeading, centerTitle;
   final List<Widget> widgets;
   final double appBarHeight;
+  final Widget? leading;
 
   /// you can add more fields that meet your needs
 
@@ -20,6 +21,8 @@ class BaseAppBar extends StatelessWidget with PreferredSizeWidget {
       required this.widgets,
       this.automaticallyImplyLeading = false,
       this.backgroundColor = noColor,
+      this.centerTitle = true,
+      this.leading,
       required this.appBarHeight})
       : super(key: key);
 
@@ -32,17 +35,21 @@ class BaseAppBar extends StatelessWidget with PreferredSizeWidget {
         elevation: 0,
         title: Text(
           title,
-          style: const TextStyle(color: kWhite),
+          style: const TextStyle(color: kBlack),
         ),
         automaticallyImplyLeading: automaticallyImplyLeading,
         centerTitle: true,
-        leading: InkWell(
-          onTap: () => KRoutes().pop(context),
-          child: const Icon(
-            Icons.arrow_back_ios,
-            size: 15,
-          ),
-        ),
+        leading: automaticallyImplyLeading == false
+            ? null
+            : leading ??
+                InkWell(
+                  onTap: () => KRoutes().pop(context),
+                  child:  Icon(
+                    Icons.arrow_back_ios,
+                    size: 15,
+                    color: kDarkPurple,
+                  ),
+                ),
         actions: widgets,
       ),
     );

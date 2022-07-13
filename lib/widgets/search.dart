@@ -1,42 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:store/Screens/Search/search_screen.dart';
+import 'package:store/utils/app_routes.dart';
 
 import 'package:store/utils/colors.dart';
-import 'package:store/widgets/widgets.dart';
 
 class CustomSearch extends StatelessWidget {
-  const CustomSearch({Key? key}) : super(key: key);
+  final String text;
+  final bool enable;
+  final TextEditingController? controller;
+  final dynamic function;
+  const CustomSearch(
+      {Key? key,
+      required this.text,
+      this.enable = true,
+      this.controller,
+      this.function})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(20),
-      width: double.maxFinite,
-      height: 50,
-      decoration: BoxDecoration(
-          color: kWhite,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
-            BoxShadow(
-                offset: Offset(1, 1),
-                color: kGrey,
-                spreadRadius: 2,
-                blurRadius: 2)
-          ]),
-      padding: const EdgeInsets.all(8),
-      child: CustomTextField(
-        controller: null,
-        label: "Search your daily grocery food ...",
-        hintText: "Search the place ..",
-        keyboardType: TextInputType.text,
-        prefixIcon: Icon(
-          Icons.search_outlined,
-          color: kBlack.withOpacity(0.5),
+        margin: const EdgeInsets.symmetric(vertical: 15),
+        width: double.maxFinite,
+        height: 50,
+        decoration: BoxDecoration(
+          color: kGrey.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(8),
         ),
-        suffixIcon: const Icon(
-          Icons.search_outlined,
-          color: noColor,
-        ),
-      ),
-    );
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(
+                Icons.search_outlined,
+                color: kDarkPurple,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: enable == false
+                    ? InkWell(
+                        onTap: () =>
+                            KRoutes().push(context, const SearchScreen()),
+                        child: TextFormField(
+                          enabled: enable,
+                          decoration: InputDecoration(
+                              hintText: text, border: InputBorder.none),
+                        ),
+                      )
+                    : TextField(
+                        controller: controller,
+                        decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            hintText: text,
+                            border: InputBorder.none),
+                        onSubmitted: (value) async {
+                          await function();
+                        },
+                      ),
+              ),
+            ]));
   }
 }

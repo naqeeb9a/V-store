@@ -11,3 +11,5 @@ export 'package:store/widgets/search.dart';
 
 export 'package:store/widgets/detail_box.dart';
 
+export 'package:store/widgets/AuthenticationScreenWigets/input_field.dart';
+

@@ -1,13 +1,24 @@
+import 'dart:convert';
+
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store/Api/api.dart';
+import 'package:store/Functionality/functionality.dart';
+import 'package:store/Model/user_model.dart';
+
 import 'package:store/Screens/AuthenticationScreens/sign_up.dart';
-import 'package:store/Screens/tab_bar.dart';
-import 'package:store/utils/app_routes.dart';
+import 'package:store/Screens/StoreSelectionScreen/selection_screen.dart';
+import 'package:store/experimental/Screens/forgot_password.dart';
+import 'package:store/provider/user_data_provider.dart';
 import 'package:store/utils/colors.dart';
 import 'package:store/widgets/custom_button.dart';
-import 'package:store/widgets/widgets.dart';
+
+import '../../utils/app_routes.dart';
+import '../../widgets/widgets.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -19,7 +30,28 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
-  bool check = false;
+  bool check = true;
+  @override
+  void initState() {
+    checkStatus();
+
+    super.initState();
+  }
+
+  checkStatus() async {
+    await EssentialFunctions.checkLoginStatus(context)
+        .then((value) => Future.delayed(
+                const Duration(
+                  seconds: 1,
+                ), () {
+              if (value == false) {
+                setState(() {
+                  check = false;
+                });
+              }
+            }));
+  }
+
   @override
   void dispose() {
     _email.dispose();
@@ -29,188 +61,148 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const CustomText(
-          text: "Login",
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          textColor: kWhite,
-        ),
-        backgroundColor: noColor,
-        elevation: 0,
-      ),
-      backgroundColor: kPink,
-      body: Padding(
-        padding: const EdgeInsets.only(top: 20),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          child: Container(
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              color: kGrey,
-            ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.all(15),
-                    padding: const EdgeInsets.all(20),
-                    height: double.maxFinite,
-                    decoration: BoxDecoration(
-                      color: kWhite,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          const CustomText(
-                            text: "Sign In",
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const CustomText(
-                            text:
-                                "Sign In with your email password to continue",
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          CustomTextField(
-                            controller: _email,
-                            label: "Email",
-                            hintText: "",
-                            prefixIcon: const SizedBox(),
-                            suffixIcon: const SizedBox(),
-                            boundaryColor: kPink,
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          CustomTextField(
-                            isPassword: true,
-                            controller: _password,
-                            label: "Password",
-                            hintText: "",
-                            prefixIcon: const SizedBox(),
-                            suffixIcon: const SizedBox(),
-                            boundaryColor: kPink,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Checkbox(
-                                      value: check,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          check = value!;
-                                        });
-                                      }),
-                                  const CustomText(text: "Remember me")
-                                ],
-                              ),
-                              const CustomText(
-                                text: "Forgot password?",
-                                textColor: Colors.red,
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                      color: kWhite,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(25),
-                          topRight: Radius.circular(25))),
-                  padding: const EdgeInsets.all(20),
+    return check == true
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Scaffold(
+            appBar: BaseAppBar(
+                title: "Login",
+                appBar: AppBar(),
+                automaticallyImplyLeading: true,
+                widgets: const [],
+                appBarHeight: 50),
+            body: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      CustomButton(
-                        text: "Sign In",
-                        function: () async {
-                          if (_email.text.isEmpty ||
-                              !_email.text.contains("@")) {
-                            Fluttertoast.showToast(
-                                msg: "Enter a Valid email",
-                                backgroundColor: Colors.red);
-                          } else if (_password.text.isEmpty) {
-                            Fluttertoast.showToast(
-                                msg: "Please enter a password first",
-                                backgroundColor: Colors.red);
-                          } else {
-                            CoolAlert.show(
-                                context: context,
-                                type: CoolAlertType.loading,
-                                lottieAsset: "assets/loader.json");
-                            var res =
-                                await Api().login(_email.text, _password.text);
-                            if (res.statusCode == 200) {
-                              KRoutes().push(context, const CustomTabBar());
-                            } else if (res.statusCode == 401) {
-                              KRoutes().pop(context);
-                              Fluttertoast.showToast(
-                                  msg: "Invalid credentials",
-                                  backgroundColor: Colors.red);
-                            } else if (res.statusCode == 500) {
-                              KRoutes().pop(context);
-                              Fluttertoast.showToast(
-                                  msg: "Server Error",
-                                  backgroundColor: Colors.red);
-                            } else {
-                              KRoutes().pop(context);
-                              Fluttertoast.showToast(
-                                  msg: "Check your internet and try again");
-                            }
-                          }
-                        },
-                        color: kPink,
-                        height: 50,
-                        minWidth: double.infinity,
+                      Image.asset(
+                        "assets/logo.jpeg",
+                        width: 200,
+                      ),
+                      const SizedBox(
+                        height: 100,
+                      ),
+                      const CustomText(
+                        text: "Welcome",
+                        fontSize: 20,
+                      ),
+                      const CustomText(
+                        text: "Check out our fresh veggies from our store",
+                        fontSize: 12,
+                        textColor: Color.fromARGB(255, 119, 117, 117),
                       ),
                       const SizedBox(
                         height: 20,
                       ),
-                      GestureDetector(
+                      CustomTextField(
+                        controller: _email,
+                        keyboardType: TextInputType.emailAddress,
+                        suffixIcon: const Icon(Icons.email_outlined),
+                        hintText: "Email",
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      CustomTextField(
+                        controller: _password,
+                        suffixIcon: const Icon(
+                          Icons.visibility_outlined,
+                        ),
+                        hintText: "Password",
+                        isPassword: true,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      InkWell(
+                        onTap: () =>
+                            KRoutes().push(context, const ForgotPassword()),
+                        child: const Align(
+                          alignment: Alignment.centerRight,
+                          child: CustomText(
+                            text: "Forgot password?",
+                            textColor: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      CustomButton(
+                        text: "Login",
+                        textColor: Colors.white,
+                        function: () async {
+                          if (_email.text.isEmpty ||
+                              !_email.text.contains("@") ||
+                              !_email.text.contains(".")) {
+                            Fluttertoast.showToast(msg: "Enter a Valid Email");
+                          } else if (_password.text.isEmpty) {
+                            Fluttertoast.showToast(
+                                msg: "Password can't be empty");
+                          } else {
+                            CoolAlert.show(
+                                context: context,
+                                type: CoolAlertType.loading,
+                                barrierDismissible: false);
+                            Response res =
+                                await Api().login(_email.text, _password.text);
+                            if (res.statusCode == 200) {
+                              var jsonData = jsonDecode(res.body);
+                              Provider.of<UserDataProvider>(context,
+                                      listen: false)
+                                  .updateUserData(User(
+                                      id: jsonData["user"]["id"],
+                                      type: jsonData["user"]["type"],
+                                      name: jsonData["user"]["email"],
+                                      avatar: jsonData["user"]["avatar"],
+                                      token: jsonData["access_token"]));
+                              SharedPreferences user =
+                                  await SharedPreferences.getInstance();
+                              user.setString("user", res.body);
+                              KRoutes().pop(context);
+                              KRoutes().pushAndRemoveUntil(
+                                  context, const StoreSelection());
+                            } else {
+                              KRoutes().pop(context);
+                              Fluttertoast.showToast(
+                                  msg: "Email or password incorrect");
+                            }
+                          }
+                        },
+                        color: kDarkPurple,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      InkWell(
                         onTap: () => KRoutes().push(context, const SignUp()),
-                        child: RichText(
-                            text: const TextSpan(children: [
-                          TextSpan(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const CustomText(
                               text: "Don't have an account? ",
-                              style: TextStyle(color: kBlack)),
-                          TextSpan(
-                              text: "Sign Up", style: TextStyle(color: kPink))
-                        ])),
-                      )
+                            ),
+                            CustomText(
+                              text: "Create Account",
+                              textColor: kDarkPurple,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                     ],
                   ),
-                )
-              ],
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
   }
 }
