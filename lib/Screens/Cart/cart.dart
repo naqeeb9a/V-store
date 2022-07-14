@@ -1,14 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:store/Api/api.dart';
 import 'package:store/Model/user_model.dart';
+import 'package:store/Screens/Cart/summary.dart';
 import 'package:store/provider/user_data_provider.dart';
+import 'package:store/utils/app_routes.dart';
 import 'package:store/utils/colors.dart';
 import 'package:store/widgets/custom_button.dart';
 import 'package:store/widgets/widgets.dart';
+
+import '../../Functionality/functionality.dart';
 
 class Cart extends StatefulWidget {
   const Cart({Key? key}) : super(key: key);
@@ -18,6 +24,8 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
+  List updatedCart = [].obs;
+
   @override
   Widget build(BuildContext context) {
     User? user = Provider.of<UserDataProvider>(context).user;
@@ -26,7 +34,39 @@ class _CartState extends State<Cart> {
           appBar: AppBar(),
           title: "Cart",
           automaticallyImplyLeading: true,
-          widgets: const [],
+          widgets: [
+            Obx((() {
+              return updatedCart.isNotEmpty
+                  ? GestureDetector(
+                      onTap: () async {
+                        EssentialFunctions.loader(context);
+                        List cartIds = [];
+                        List cartQuantities = [];
+                        for (var element in updatedCart) {
+                          cartIds.add(element["id"]);
+                          cartQuantities.add(element["qty"]);
+                        }
+                        var res = await Api().updateCartItem(
+                            user!.token.toString(),
+                            cartIds.join(","),
+                            cartQuantities.join(","));
+                        if (res != false) {
+                          Navigator.of(context, rootNavigator: true).pop();
+                          updatedCart.clear();
+                          setState(() {});
+                          Fluttertoast.showToast(msg: "Cart updated");
+                        } else {
+                          Navigator.of(context, rootNavigator: true);
+                          Fluttertoast.showToast(msg: "Something went wrong");
+                        }
+                      },
+                      child: Icon(
+                        Icons.save_outlined,
+                        color: kDarkPurple,
+                      ))
+                  : const Center();
+            }))
+          ],
           appBarHeight: 70,
         ),
         body: Padding(
@@ -62,91 +102,11 @@ class _CartState extends State<Cart> {
                                 },
                               ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const CustomText(text: "Price"),
-                                CustomText(
-                                  text:
-                                      getTotal(snapshot.data[0]["cart_items"]),
-                                  textColor: kBlack,
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const CustomText(text: "Delivery"),
-                                CustomText(
-                                  text: "Rs. 50",
-                                  textColor: kBlack.withOpacity(0.3),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const CustomText(text: "Discount"),
-                                CustomText(
-                                  text: "0 %",
-                                  textColor: kBlack.withOpacity(0.3),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const CustomText(text: "Total"),
-                                Row(
-                                  children: [
-                                    CustomText(
-                                      text: "Rs. ",
-                                      textColor: kBlack.withOpacity(0.3),
-                                    ),
-                                    CustomText(
-                                      text: getTotal(
-                                          snapshot.data[0]["cart_items"]),
-                                      textColor: kDarkPurple,
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const CustomText(text: "Copoun"),
-                                CustomText(
-                                  text: "✔️ Copoun Applied",
-                                  textColor: kDarkPurple,
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const CustomTextField(
-                                prefixIcon: Icon(CupertinoIcons.gift),
-                                controller: null,
-                                hintText: "Ex: Welcome20"),
-                            const SizedBox(
-                              height: 10,
-                            ),
                             CustomButton(
                               text: "Checkout",
-                              function: () {},
+                              function: () {
+                                KRoutes().push(context, const SummaryScreen());
+                              },
                               color: kDarkPurple,
                               minWidth: double.infinity,
                               textColor: kWhite,
@@ -173,17 +133,23 @@ class _CartState extends State<Cart> {
   }
 
   cartCards(context, index, cartItems, User user) {
-    int qtyValue = 1;
+    int qtyValue = cartItems[index]["quantity"];
     return Slidable(
       endActionPane:
           ActionPane(extentRatio: 0.2, motion: const ScrollMotion(), children: [
         SlidableAction(
           onPressed: (value) async {
-            // CoolAlert.show(context: context, type: CoolAlertType.loading);
-            // await Api().updateCart(user.token.toString(),
-            //     cartItems[index]["product_id"].toString(), "0");
-            // Navigator.of(context, rootNavigator: true).pop();
-            // setState(() {});
+            EssentialFunctions.loader(context);
+            var res = await Api().deleteCartItem(
+                user.token.toString(), cartItems[index]["id"].toString());
+            if (res != false) {
+              Navigator.of(context, rootNavigator: true).pop();
+              setState(() {});
+              Fluttertoast.showToast(msg: "item deleted");
+            } else {
+              Navigator.of(context, rootNavigator: true);
+              Fluttertoast.showToast(msg: "Something went wrong");
+            }
           },
           backgroundColor: const Color(0xFFFE4A49),
           foregroundColor: Colors.white,
@@ -256,6 +222,16 @@ class _CartState extends State<Cart> {
                       changeState(() {
                         qtyValue--;
                       });
+                      final index1 = updatedCart.indexWhere((element) =>
+                          element["id"] == cartItems[index]["id"].toString());
+                      if (index1 == -1) {
+                        updatedCart.add({
+                          "id": cartItems[index]["id"].toString(),
+                          "qty": qtyValue.toString()
+                        });
+                      } else {
+                        updatedCart[index1]["qty"] = qtyValue.toString();
+                      }
                     }
                   },
                   child: CircleAvatar(
@@ -280,6 +256,16 @@ class _CartState extends State<Cart> {
                     changeState(() {
                       qtyValue++;
                     });
+                    final index1 = updatedCart.indexWhere((element) =>
+                        element["id"] == cartItems[index]["id"].toString());
+                    if (index1 == -1) {
+                      updatedCart.add({
+                        "id": cartItems[index]["id"].toString(),
+                        "qty": qtyValue.toString()
+                      });
+                    } else {
+                      updatedCart[index1]["qty"] = qtyValue.toString();
+                    }
                   },
                   child: CircleAvatar(
                     radius: 12,

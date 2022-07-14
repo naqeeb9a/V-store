@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cool_alert/cool_alert.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store/Model/user_model.dart';
@@ -42,12 +43,20 @@ class EssentialFunctions {
       Provider.of<UserDataProvider>(context, listen: false).updateUserData(User(
           id: jsonData["user"]["id"],
           type: jsonData["user"]["type"],
-          name: jsonData["user"]["email"],
-          avatar: jsonData["user"]["avatar"],
+          name: jsonData["user"]["name"],
+          email: jsonData["user"]["email"],
+          avatar: jsonData["user"]["avatar_original"],
           token: jsonData["access_token"]));
       KRoutes().pushAndRemoveUntil(context, const StoreSelection());
       return true;
     }
     return false;
+  }
+
+  static loader(context) {
+    CoolAlert.show(
+        context: context,
+        type: CoolAlertType.loading,
+        barrierDismissible: false);
   }
 }

@@ -158,8 +158,10 @@ class _LoginState extends State<Login> {
                                   .updateUserData(User(
                                       id: jsonData["user"]["id"],
                                       type: jsonData["user"]["type"],
-                                      name: jsonData["user"]["email"],
-                                      avatar: jsonData["user"]["avatar"],
+                                      name: jsonData["user"]["name"],
+                                      email: jsonData["user"]["email"],
+                                      avatar: jsonData["user"]
+                                          ["avatar_original"],
                                       token: jsonData["access_token"]));
                               SharedPreferences user =
                                   await SharedPreferences.getInstance();

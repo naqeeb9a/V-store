@@ -1,11 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:store/Api/api.dart';
 import 'package:store/Functionality/functionality.dart';
+import 'package:store/Model/user_model.dart';
 import 'package:store/Screens/HomePageScreens/Brands/all_brands.dart';
 import 'package:store/Screens/HomePageScreens/Brands/brands.dart';
 import 'package:store/Screens/HomePageScreens/Categories/categories.dart';
 import 'package:store/Screens/HomePageScreens/Categories/home_page_categories.dart';
 import 'package:store/Screens/HomePageScreens/DetailPage/detail_list.dart';
+import 'package:store/Screens/HomePageScreens/FlashDeals/flash_deals.dart';
+import 'package:store/provider/user_data_provider.dart';
 import 'package:store/utils/app_routes.dart';
 import 'package:store/utils/colors.dart';
 import 'package:store/utils/data.dart';
@@ -64,7 +71,11 @@ class _HomePageState extends State<HomePage> {
                       text1: "Categories",
                       visibility: true,
                       function: () {
-                        KRoutes().push(context, const CategoriesScreen());
+                        KRoutes().push(
+                            context,
+                            const CategoriesScreen(
+                              backButton: true,
+                            ));
                       },
                     ),
                     const SizedBox(
@@ -74,10 +85,13 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       height: 15,
                     ),
-                    const RowText(
+                    RowText(
                       text1: "Big Offers",
                       visibility: true,
                       text2: "All Offers",
+                      function: () {
+                        KRoutes().push(context, const FlashDeals());
+                      },
                     ),
                     const SizedBox(
                       height: 15,
@@ -239,67 +253,93 @@ class _HomePageState extends State<HomePage> {
   }
 
   bigOffersCard() {
+    User? user = context.read<UserDataProvider>().user;
+    List<Color> colors = [
+      Colors.amber,
+      Colors.green,
+      Colors.red,
+      Colors.deepOrange,
+      Colors.indigo,
+      Colors.brown,
+      Colors.purple,
+      Colors.pinkAccent,
+      Colors.blueGrey,
+      Colors.blue
+    ];
+    return FutureBuilder(
+      future: Api().getFlashDeals(user!.token.toString()),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: (snapshot.data["data"] as List)
+                  .map((dynamic e) => Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        padding: const EdgeInsets.all(10),
+                        width: 200,
+                        height: 120,
+                        decoration: BoxDecoration(
+                            color: colors[Random().nextInt(10)],
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 1,
+                            ),
+                            CustomText(
+                              text: e["title"],
+                              alignment: Alignment.centerLeft,
+                              textColor: kWhite,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const CustomText(
+                                  text: "10% Sale",
+                                  textColor: kWhite,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                Image.network(
+                                  "http://vstore.kissancorner.pk/public/${e["banner"]}",
+                                  height: 60,
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ))
+                  .toList(),
+            ),
+          );
+        } else {
+          return bigOfferCardsShimmer();
+        }
+      },
+    );
+  }
+
+  bigOfferCardsShimmer() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: [
-          {
-            "name": "Fresh Eggs",
-            "image": "eggs.png",
-            "discount": "50%",
-            "color": Colors.orange
-          },
-          {
-            "name": "All kinds of Snacks",
-            "image": "snacks.png",
-            "discount": "10%",
-            "color": Colors.teal
-          },
-          {
-            "name": "Bakery's all goodies",
-            "image": "bakery.png",
-            "discount": "20%",
-            "color": Colors.red
-          },
-        ]
-            .map((dynamic e) => Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  padding: const EdgeInsets.all(10),
-                  width: 200,
-                  height: 120,
-                  decoration: BoxDecoration(
-                      color: e["color"],
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 1,
-                      ),
-                      CustomText(
-                        text: e["name"],
-                        alignment: Alignment.centerLeft,
-                        textColor: kWhite,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            text: e["discount"] + " Sale",
-                            textColor: kWhite,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          Image.asset(
-                            "assets/${e["image"]}",
-                            height: 60,
-                          )
-                        ],
-                      )
-                    ],
+        children: [1, 2, 3]
+            .map((dynamic e) => Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: kWhite,
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 10),
+                    padding: const EdgeInsets.all(10),
+                    width: 200,
+                    height: 120,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[300]!,
+                        borderRadius: BorderRadius.circular(10)),
                   ),
                 ))
             .toList(),

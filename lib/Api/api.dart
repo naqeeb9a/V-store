@@ -23,8 +23,32 @@ class Api {
     return res;
   }
 
+  getProfile(String token) async {
+    var res = await http.post(
+      Uri.parse("$baseUrl/get-user-by-access_token"),
+      body: {"access_token": token},
+    );
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
   getCategories() async {
     var res = await http.get(Uri.parse("$baseUrl/categories"));
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  getFlashDeals(String token) async {
+    var res = await http.get(Uri.parse("$baseUrl/flash-deals"),
+        headers: {"Authorization": "Bearer $token"});
 
     if (res.statusCode == 200) {
       return jsonDecode(res.body);
@@ -168,9 +192,142 @@ class Api {
     }
   }
 
-  updateCart(String token, String productId, String productQty) async {
+  updateProfile(String id, String name, String password, String token) async {
+    var res = await http.post(Uri.parse("$baseUrl/profile/update"),
+        body: {"id": id, "name": name, "password": password},
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  updateProfilePicture(String id, String token, String image) async {
+    var res = await http.post(Uri.parse("$baseUrl/profile/update-image"),
+        body: {"id": id, "filename": "profile.jpg", "image": image},
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  getPurchaseHistory(String token) async {
+    var res = await http.get(Uri.parse("$baseUrl/purchase-history"),
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  getAddresses(String token) async {
+    var res = await http.get(Uri.parse("$baseUrl/user/shipping/address"),
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  addUserAddress(
+    String token,
+    String id,
+    String address,
+    String countryId,
+    String stateId,
+    String cityId,
+    String postal,
+    String phone,
+  ) async {
+    var res =
+        await http.post(Uri.parse("$baseUrl/user/shipping/create"), body: {
+      "user_id": id,
+      "address": address,
+      "country_id": countryId,
+      "city_id": cityId,
+      "state_id": stateId,
+      "postal_code": postal,
+      "phone": phone
+    }, headers: {
+      "Authorization": "Bearer $token"
+    });
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  getCountries(String token) async {
+    var res = await http.get(Uri.parse("$baseUrl/countries"),
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  getCities(String token) async {
+    var res = await http.get(Uri.parse("$baseUrl/cities"),
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  deleteUserAddress(String token, String id) async {
+    var res = await http.get(Uri.parse("$baseUrl/user/shipping/delete/$id"),
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  deleteCartItem(String token, String id) async {
+    var res = await http.delete(Uri.parse("$baseUrl/carts/$id"),
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  updateCartItem(String token, String cartIds, String cartQuantities) async {
     var res = await http.post(Uri.parse("$baseUrl/carts/process"),
-        body: {"cart_ids": productId, "cart_quantities": productQty},
+        body: {"cart_ids": cartIds, "cart_quantities": cartQuantities},
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  getCartSummary(
+    String token,
+  ) async {
+    var res = await http.get(Uri.parse("$baseUrl/cart-summary"),
         headers: {"Authorization": "Bearer $token"});
 
     if (res.statusCode == 200) {

@@ -1,20 +1,40 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:store/Screens/ProfileScreen/addresses_screen.dart';
+import 'package:store/Screens/ProfileScreen/profile_and_security.dart';
+import 'package:store/Screens/ProfileScreen/purchase_history.dart';
 import 'package:store/Screens/WishlistScreen/wishlist.dart';
 import 'package:store/utils/app_routes.dart';
 import 'package:store/utils/colors.dart';
 import 'package:store/widgets/widgets.dart';
 
-class Profile extends StatelessWidget {
+import '../../Api/api.dart';
+import '../../Model/user_model.dart';
+import '../../provider/user_data_provider.dart';
+
+class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
 
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     List itemsList = [
       {
         "icon": Icons.person_outline,
         "text": "Profile & Security",
-        "function": () {}
+        "function": () {
+          KRoutes().push(context, ProfileAndSecurity(
+            function: () {
+              setState(() {});
+            },
+          ));
+        }
       },
       {
         "icon": Icons.favorite_outline,
@@ -30,6 +50,7 @@ class Profile extends StatelessWidget {
       },
       {"icon": Icons.help_outline, "text": "Help Center", "function": () {}},
     ];
+    User? user = context.read<UserDataProvider>().user;
     return Scaffold(
         appBar: BaseAppBar(
             title: "Account",
@@ -55,29 +76,78 @@ class Profile extends StatelessWidget {
                       children: [
                         Column(
                           children: [
-                            const CircleAvatar(
-                              radius: 30,
-                              foregroundImage: NetworkImage(
-                                  "https://theundercoverrecruiter.com/wp-content/uploads/2018/09/ian-dooley-281846-unsplash-1-e1537195966706.jpg"),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const CustomText(
-                              text: "Susan J. Patt",
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                            const SizedBox(
-                              height: 2,
-                            ),
-                            CustomText(
-                              text: "@sapttron",
-                              fontSize: 15,
-                              textColor: kBlack.withOpacity(0.6),
-                            ),
-                            const SizedBox(
-                              height: 10,
+                            FutureBuilder(
+                              future: Api().getProfile(user!.token.toString()),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  return Column(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 30,
+                                        foregroundImage: NetworkImage(
+                                          "http://vstore.kissancorner.pk/public/${snapshot.data["avatar_original"]}",
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      CustomText(
+                                        text: snapshot.data["name"],
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                      const SizedBox(
+                                        height: 2,
+                                      ),
+                                      CustomText(
+                                        text: snapshot.data["email"],
+                                        fontSize: 15,
+                                        textColor: kBlack.withOpacity(0.6),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Column(
+                                    children: [
+                                      const CircleAvatar(
+                                        radius: 30,
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Shimmer.fromColors(
+                                        baseColor: Colors.grey[300]!,
+                                        highlightColor: kWhite,
+                                        child: Container(
+                                          height: 20,
+                                          width: 100,
+                                          color: Colors.grey[300]!,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Shimmer.fromColors(
+                                        baseColor: Colors.grey[300]!,
+                                        highlightColor: kWhite,
+                                        child: Container(
+                                          color: Colors.grey[300]!,
+                                          height: 20,
+                                          width: 200,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  );
+                                }
+                              },
                             ),
                             const Divider(
                               color: kBlack,
@@ -88,20 +158,26 @@ class Profile extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Column(
-                                  children: const [
-                                    Icon(
-                                      CupertinoIcons.square_list,
-                                      size: 25,
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    CustomText(
-                                      text: "My Orders",
-                                      fontSize: 12,
-                                    ),
-                                  ],
+                                GestureDetector(
+                                  onTap: () {
+                                    KRoutes()
+                                        .push(context, const PurchaseHistory());
+                                  },
+                                  child: Column(
+                                    children: const [
+                                      Icon(
+                                        CupertinoIcons.square_list,
+                                        size: 25,
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      CustomText(
+                                        text: "My Orders",
+                                        fontSize: 12,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 Column(
                                   children: const [
@@ -118,20 +194,26 @@ class Profile extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                Column(
-                                  children: const [
-                                    Icon(
-                                      CupertinoIcons.location,
-                                      size: 25,
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    CustomText(
-                                      text: "Location",
-                                      fontSize: 12,
-                                    ),
-                                  ],
+                                GestureDetector(
+                                  onTap: () {
+                                    KRoutes()
+                                        .push(context, const AddressesScreen());
+                                  },
+                                  child: Column(
+                                    children: const [
+                                      Icon(
+                                        CupertinoIcons.location,
+                                        size: 25,
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      CustomText(
+                                        text: "Addresses",
+                                        fontSize: 12,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             )
