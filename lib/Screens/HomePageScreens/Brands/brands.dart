@@ -79,7 +79,7 @@ class Brands extends StatelessWidget {
       baseColor: Colors.grey[300]!,
       highlightColor: kWhite,
       child: Container(
-        margin: const EdgeInsets.only(left: 10),
+        margin: const EdgeInsets.only(right: 10),
         height: 100,
         width: 100,
         decoration: BoxDecoration(

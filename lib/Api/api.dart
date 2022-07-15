@@ -301,6 +301,18 @@ class Api {
     }
   }
 
+  updateUserAddressInCart(String token, String id, String addressId) async {
+    var res = await http.post(Uri.parse("$baseUrl/update-address-in-cart"),
+        body: {"user_id": id, "address_id": addressId},
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
   deleteCartItem(String token, String id) async {
     var res = await http.delete(Uri.parse("$baseUrl/carts/$id"),
         headers: {"Authorization": "Bearer $token"});
@@ -329,6 +341,47 @@ class Api {
   ) async {
     var res = await http.get(Uri.parse("$baseUrl/cart-summary"),
         headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  applyCopoun(
+      String id, String ownerId, String couponCode, String token) async {
+    var res = await http.post(Uri.parse("$baseUrl/coupon-apply"),
+        body: {"user_id": id, "owner_id": ownerId, "coupon_code": couponCode},
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  removeCopoun(String id, String ownerId, String token) async {
+    var res = await http.post(Uri.parse("$baseUrl/coupon-remove"),
+        body: {"user_id": id, "owner_id": ownerId},
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  createOrder(String id, String ownerId, String token) async {
+    var res = await http.post(Uri.parse("$baseUrl/order/store"), body: {
+      "owner_id": ownerId,
+      "user_id": id,
+      "payment_type": "cash_payment"
+    }, headers: {
+      "Authorization": "Bearer $token"
+    });
 
     if (res.statusCode == 200) {
       return jsonDecode(res.body);

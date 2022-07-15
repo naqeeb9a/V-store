@@ -105,7 +105,12 @@ class _CartState extends State<Cart> {
                             CustomButton(
                               text: "Checkout",
                               function: () {
-                                KRoutes().push(context, const SummaryScreen());
+                                KRoutes().push(
+                                    context,
+                                    SummaryScreen(
+                                      ownerId: snapshot.data[0]["owner_id"]
+                                          .toString(),
+                                    ));
                               },
                               color: kDarkPurple,
                               minWidth: double.infinity,
