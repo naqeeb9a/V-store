@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
@@ -145,10 +144,7 @@ class _LoginState extends State<Login> {
                             Fluttertoast.showToast(
                                 msg: "Password can't be empty");
                           } else {
-                            CoolAlert.show(
-                                context: context,
-                                type: CoolAlertType.loading,
-                                barrierDismissible: false);
+                            EssentialFunctions.loader(context);
                             Response res =
                                 await Api().login(_email.text, _password.text);
                             if (res.statusCode == 200) {

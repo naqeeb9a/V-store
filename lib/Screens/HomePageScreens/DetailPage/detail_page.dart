@@ -1,4 +1,3 @@
-import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,6 +12,7 @@ import 'package:store/widgets/DetailListWidgets/detail_page_shimmer.dart';
 import 'package:store/widgets/dividing_shade.dart';
 import 'package:store/widgets/widgets.dart';
 
+import '../../../Functionality/functionality.dart';
 import '../../../utils/app_routes.dart';
 
 class DetailPage extends StatelessWidget {
@@ -46,7 +46,7 @@ class DetailPage extends StatelessWidget {
             widgets: [
               InkWell(
                 onTap: () {
-                  KRoutes().push(context, const Cart());
+                  KRoutes().push(context, const Cart(backEnabled: true,));
                 },
                 child: Icon(
                   CupertinoIcons.cart,
@@ -165,8 +165,7 @@ class DetailPage extends StatelessWidget {
                         if (selectedVariant == null) {
                           Fluttertoast.showToast(msg: "Select a variant first");
                         } else {
-                          CoolAlert.show(
-                              context: context, type: CoolAlertType.loading,barrierDismissible: false);
+                          EssentialFunctions.loader(context);
                           var response = await Api().addToCart(
                               data["id"].toString(),
                               user.id.toString(),
@@ -174,6 +173,9 @@ class DetailPage extends StatelessWidget {
                               data["variants"][selectedVariant]["variant"]);
                           if (response.statusCode == 200) {
                             Navigator.of(context, rootNavigator: true).pop();
+                            if (refreshCart != null) {
+                              refreshCart!();
+                            }
                             Fluttertoast.showToast(
                                 msg: "Product added to cart");
                           } else {

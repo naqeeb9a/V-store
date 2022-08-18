@@ -17,7 +17,9 @@ import '../../provider/user_data_provider.dart';
 
 class AddressesScreen extends StatefulWidget {
   final bool showConfirmButton;
-  const AddressesScreen({Key? key, this.showConfirmButton = false})
+  final dynamic function;
+  const AddressesScreen(
+      {Key? key, this.showConfirmButton = false, this.function})
       : super(key: key);
 
   @override
@@ -71,7 +73,11 @@ class _AddressesScreenState extends State<AddressesScreen>
                       indexValue.toString());
                   if (res != false) {
                     Navigator.of(context, rootNavigator: true).pop();
-                    KRoutes().pop(context);
+                    if (widget.showConfirmButton) {
+                      Navigator.pop(context, widget.function());
+                    } else {
+                      KRoutes().pop(context);
+                    }
                     Fluttertoast.showToast(msg: "Address Selected");
                   } else {
                     Navigator.of(context, rootNavigator: true);
@@ -153,50 +159,62 @@ class _AddressesScreenState extends State<AddressesScreen>
                           ]),
                       child: SlideTransition(
                         position: _offsetAnimation,
-                        child: Row(
+                        child: Column(
                           children: [
-                            Radio(
-                                value:
-                                    snapshot.data["data"][index]["id"] as int,
-                                groupValue: indexValue,
-                                onChanged: (value) {
-                                  changeState(() {
-                                    indexValue = snapshot.data["data"][index]
-                                        ["id"] as int;
-                                  });
-                                }),
-                            Container(
-                              padding: const EdgeInsets.all(15),
-                              margin: const EdgeInsets.all(10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomText(
-                                    text: snapshot.data["data"][index]
-                                        ["address"],
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    alignment: Alignment.centerLeft,
+                            Row(
+                              children: [
+                                Radio(
+                                    value: snapshot.data["data"][index]["id"]
+                                        as int,
+                                    groupValue: indexValue,
+                                    onChanged: (value) {
+                                      changeState(() {
+                                        indexValue = snapshot.data["data"]
+                                            [index]["id"] as int;
+                                      });
+                                    }),
+                                Container(
+                                  padding: const EdgeInsets.all(15),
+                                  margin: const EdgeInsets.all(10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      CustomText(
+                                        text: snapshot.data["data"][index]
+                                            ["address"],
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        alignment: Alignment.centerLeft,
+                                      ),
+                                      CustomText(
+                                        text: snapshot.data["data"][index]
+                                            ["state_name"],
+                                        alignment: Alignment.centerLeft,
+                                        fontSize: 18,
+                                      ),
+                                      CustomText(
+                                        text: snapshot.data["data"][index]
+                                            ["city_name"],
+                                        alignment: Alignment.centerLeft,
+                                        fontSize: 15,
+                                      ),
+                                      CustomText(
+                                        text: snapshot.data["data"][index]
+                                            ["phone"],
+                                        alignment: Alignment.centerLeft,
+                                      ),
+                                    ],
                                   ),
-                                  CustomText(
-                                    text: snapshot.data["data"][index]
-                                        ["state_name"],
-                                    alignment: Alignment.centerLeft,
-                                    fontSize: 18,
-                                  ),
-                                  CustomText(
-                                    text: snapshot.data["data"][index]
-                                        ["city_name"],
-                                    alignment: Alignment.centerLeft,
-                                    fontSize: 15,
-                                  ),
-                                  CustomText(
-                                    text: snapshot.data["data"][index]["phone"],
-                                    alignment: Alignment.centerLeft,
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
+                            Divider(
+                              thickness: 1,
+                              color: kBlack.withOpacity(0.4),
+                              endIndent: 50,
+                              indent: 50,
+                            )
                           ],
                         ),
                       ),

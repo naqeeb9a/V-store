@@ -22,8 +22,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 
-  Widget _buildImage(String assetName, [double width = 350]) {
-    return Image.asset('assets/$assetName', width: width);
+  Widget _buildImage(String assetName, {double? width, double? height}) {
+    return Image.asset(
+      'assets/$assetName',
+      width: width ?? MediaQuery.of(context).size.width * 0.7,
+      height: height ?? MediaQuery.of(context).size.width * 0.5,
+    );
   }
 
   @override
@@ -46,7 +50,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(top: 16, right: 16),
-            child: _buildImage('logo.jpeg', 100),
+            child: _buildImage('logo.jpeg', width: 100, height: 50),
           ),
         ),
       ),
@@ -90,25 +94,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               },
               color: kDarkPurple),
           decoration: pageDecoration,
-        ),
-        PageViewModel(
-          title: "Title of last page - reversed",
-          bodyWidget: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text("Click on ", style: bodyStyle),
-              Icon(Icons.edit),
-              Text(" to edit a post", style: bodyStyle),
-            ],
-          ),
-          decoration: pageDecoration.copyWith(
-            bodyFlex: 2,
-            imageFlex: 4,
-            bodyAlignment: Alignment.bottomCenter,
-            imageAlignment: Alignment.topCenter,
-          ),
-          image: _buildImage('cornfloor.png'),
-          reverse: true,
         ),
       ],
       onDone: () => _onIntroEnd(context),

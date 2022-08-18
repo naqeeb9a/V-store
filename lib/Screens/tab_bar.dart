@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:store/Screens/Cart/cart.dart';
 
 import 'package:store/Screens/HomePageScreens/Categories/categories.dart';
 
@@ -25,6 +26,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
     return [
       const HomePage(),
       const CategoriesScreen(),
+      const Cart(backEnabled: false,),
       const NotificationsScreen(),
       const Profile()
     ];
@@ -44,6 +46,13 @@ class _CustomTabBarState extends State<CustomTabBar> {
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.list_bullet),
         title: ("Settings"),
+        iconSize: 20,
+        activeColorPrimary: kDarkPurple,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.cart),
+        title: ("Cart"),
         iconSize: 20,
         activeColorPrimary: kDarkPurple,
         inactiveColorPrimary: CupertinoColors.systemGrey,

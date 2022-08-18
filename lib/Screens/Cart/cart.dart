@@ -17,7 +17,8 @@ import 'package:store/widgets/widgets.dart';
 import '../../Functionality/functionality.dart';
 
 class Cart extends StatefulWidget {
-  const Cart({Key? key}) : super(key: key);
+  final bool backEnabled;
+  const Cart({Key? key, required this.backEnabled}) : super(key: key);
 
   @override
   State<Cart> createState() => _CartState();
@@ -25,6 +26,13 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   List updatedCart = [].obs;
+  @override
+  void initState() {
+    refreshCart = () {
+      setState(() {});
+    };
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +41,7 @@ class _CartState extends State<Cart> {
         appBar: BaseAppBar(
           appBar: AppBar(),
           title: "Cart",
-          automaticallyImplyLeading: true,
+          automaticallyImplyLeading: widget.backEnabled,
           widgets: [
             Obx((() {
               return updatedCart.isNotEmpty

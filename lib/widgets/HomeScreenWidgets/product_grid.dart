@@ -1,4 +1,3 @@
-import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -275,7 +274,11 @@ class _ProductGridState extends State<ProductGrid> {
                   ),
                   InkWell(
                     onTap: () {
-                      KRoutes().push(context, const Cart());
+                      KRoutes().push(
+                          context,
+                          const Cart(
+                            backEnabled: true,
+                          ));
                     },
                     child: Icon(
                       CupertinoIcons.cart,
@@ -357,10 +360,7 @@ class _ProductGridState extends State<ProductGrid> {
                         ),
                         InkWell(
                           onTap: () async {
-                            CoolAlert.show(
-                                context: context,
-                                type: CoolAlertType.loading,
-                                barrierDismissible: false);
+                            EssentialFunctions.loader(context);
                             var response = await Api().addToCart(
                                 e["id"].toString(),
                                 user!.id.toString(),
@@ -368,6 +368,9 @@ class _ProductGridState extends State<ProductGrid> {
                                 e["variants"][index]["variant"]);
                             if (response.statusCode == 200) {
                               Navigator.of(context, rootNavigator: true).pop();
+                              if (refreshCart != null) {
+                                refreshCart!();
+                              }
                               Fluttertoast.showToast(
                                   msg: "Product added to cart");
                             } else {

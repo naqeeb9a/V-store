@@ -15,13 +15,13 @@ import 'package:store/Screens/HomePageScreens/FlashDeals/flash_deals.dart';
 import 'package:store/provider/user_data_provider.dart';
 import 'package:store/utils/app_routes.dart';
 import 'package:store/utils/colors.dart';
-import 'package:store/utils/data.dart';
 import 'package:store/widgets/HomeScreenWidgets/display_container.dart';
 import 'package:store/widgets/HomeScreenWidgets/product_grid.dart';
 
 import 'package:store/widgets/widgets.dart';
 
 import '../../widgets/HomeScreenWidgets/row_text.dart';
+import '../../widgets/custom_button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -42,12 +42,15 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Column(
                   children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
                     homePageAppBar(),
                     const SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     const CustomSearch(
-                      text: "Search anything",
+                      text: "Check out some fresh veggies",
                       enable: false,
                     ),
                   ],
@@ -142,53 +145,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget categoriesWidget(String selectedStore) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: (categoriesList[selectedStore] as List)
-            .map(
-              (e) => InkWell(
-                onTap: () {
-                  // KRoutes().push(
-                  //     context,
-                  //     const DetailList(
-                  //         // filters: e["categories"],
-                  //         ));
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  padding: const EdgeInsets.all(5),
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: kGrey.withOpacity(0.3)),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Image.asset(
-                        e["image"] ?? "assets/baby.png",
-                        fit: BoxFit.cover,
-                        height: 60,
-                      ),
-                      SizedBox(
-                          height: 40,
-                          child: CustomText(
-                            text: e["name"],
-                            fontSize: 12,
-                          ))
-                    ],
-                  ),
-                ),
-              ),
-            )
-            .toList(),
-      ),
-    );
-  }
-
   homePageAppBar() {
+    User? user = context.read<UserDataProvider>().user;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -198,8 +156,8 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(
               height: 15,
             ),
-            const CustomText(
-              text: "Hello Naqeeb!",
+            CustomText(
+              text: "Hello ${user!.name}!",
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -266,62 +224,74 @@ class _HomePageState extends State<HomePage> {
       Colors.blueGrey,
       Colors.blue
     ];
-    return FutureBuilder(
-      future: Api().getFlashDeals(user!.token.toString()),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: (snapshot.data["data"] as List)
-                  .map((dynamic e) => Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        padding: const EdgeInsets.all(10),
-                        width: 200,
-                        height: 120,
-                        decoration: BoxDecoration(
-                            color: colors[Random().nextInt(10)],
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 1,
-                            ),
-                            CustomText(
-                              text: e["title"],
-                              alignment: Alignment.centerLeft,
-                              textColor: kWhite,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            Row(
+    return StatefulBuilder(builder: (context, changeState) {
+      return FutureBuilder(
+        future: Api().getFlashDeals(user!.token.toString()),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data == false) {
+              return CustomButton(
+                  text: "Retry",
+                  function: () {
+                    changeState(() {});
+                  },
+                  color: kDarkPurple);
+            } else {
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: (snapshot.data["data"] as List)
+                      .map((dynamic e) => Container(
+                            margin: const EdgeInsets.only(right: 10),
+                            padding: const EdgeInsets.all(10),
+                            width: 200,
+                            height: 120,
+                            decoration: BoxDecoration(
+                                color: colors[Random().nextInt(10)],
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const CustomText(
-                                  text: "10% Sale",
-                                  textColor: kWhite,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
+                                const SizedBox(
+                                  height: 1,
                                 ),
-                                Image.network(
-                                  "http://vstore.kissancorner.pk/public/${e["banner"]}",
-                                  height: 60,
+                                CustomText(
+                                  text: e["title"],
+                                  alignment: Alignment.centerLeft,
+                                  textColor: kWhite,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const CustomText(
+                                      text: "10% Sale",
+                                      textColor: kWhite,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    Image.network(
+                                      "http://vstore.kissancorner.pk/public/${e["banner"]}",
+                                      height: 60,
+                                    )
+                                  ],
                                 )
                               ],
-                            )
-                          ],
-                        ),
-                      ))
-                  .toList(),
-            ),
-          );
-        } else {
-          return bigOfferCardsShimmer();
-        }
-      },
-    );
+                            ),
+                          ))
+                      .toList(),
+                ),
+              );
+            }
+          } else {
+            return bigOfferCardsShimmer();
+          }
+        },
+      );
+    });
   }
 
   bigOfferCardsShimmer() {

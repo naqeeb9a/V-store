@@ -27,3 +27,4 @@ const MaterialColor primaryColor = MaterialColor(
     900: Color(0xffffffff),
   },
 );
+Function? refreshCart;

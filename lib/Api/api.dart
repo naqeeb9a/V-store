@@ -79,6 +79,17 @@ class Api {
     }
   }
 
+  getSubProducts(String subId) async {
+    var res = await http.get(Uri.parse(
+        "$baseUrl/products/sub-category/$subId?page=${CustomCounter.incement}"));
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
   checkIfInWishList(String productId, String userId, String token) async {
     var res = await http.get(
         Uri.parse(
@@ -382,6 +393,30 @@ class Api {
     }, headers: {
       "Authorization": "Bearer $token"
     });
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  purchaseHistory(String token, String orderId) async {
+    var res = await http.get(
+        Uri.parse("$baseUrl/purchase-history-items/$orderId"),
+        headers: {"Authorization": "Bearer $token"});
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      return false;
+    }
+  }
+
+  purchaseHistoryDetails(String token, String orderId) async {
+    var res = await http.get(
+        Uri.parse("$baseUrl/purchase-history-details/$orderId"),
+        headers: {"Authorization": "Bearer $token"});
 
     if (res.statusCode == 200) {
       return jsonDecode(res.body);

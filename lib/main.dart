@@ -2,11 +2,12 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:store/Screens/IntroScreens/intro.dart';
-import 'package:store/provider/cart_provider.dart';
+import 'package:store/Screens/IntroScreens/splash_screen.dart';
+import 'package:store/provider/sub_category_provider.dart';
 import 'package:store/provider/store_provider.dart';
 import 'package:store/provider/user_data_provider.dart';
 import 'package:store/utils/colors.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => CartProvider(cartItems: []),
+          create: (context) => SubCategoryProvider(id: -1),
         ),
         ChangeNotifierProvider(
           create: (context) => StoreProvider(),
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
             },
           ),
         ),
-        home: const OnBoardingPage(),
+        home: const SplashScreen(),
       ),
     );
   }

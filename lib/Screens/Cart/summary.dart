@@ -48,6 +48,30 @@ class _SummaryScreenState extends State<SummaryScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const CustomText(
+                        text: "Address",
+                        fontSize: 20,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        child: CustomText(
+                          text: snapshot.data["address"] == null
+                              ? "Select an address"
+                              : snapshot.data["address"]["address"].toString(),
+                          textColor: kBlack,
+                          fontSize: 20,
+                          alignText: TextAlign.right,
+                          alignment: Alignment.centerRight,
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const CustomText(
                         text: "Sub Total",
                         fontSize: 20,
                       ),
@@ -223,8 +247,11 @@ class _SummaryScreenState extends State<SummaryScreen> {
                     function: () {
                       KRoutes().push(
                           context,
-                          const AddressesScreen(
+                          AddressesScreen(
                             showConfirmButton: true,
+                            function: () {
+                              setState(() {});
+                            },
                           ));
                     },
                     color: kDarkPurple,
@@ -237,16 +264,21 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   CustomButton(
                     text: "Confirm Order",
                     function: () async {
-                      EssentialFunctions.loader(context);
-                      var res = await Api().createOrder(user.id.toString(),
-                          widget.ownerId, user.token.toString());
-                      if (res != false) {
-                        Navigator.of(context, rootNavigator: true).pop();
-                        KRoutes()
-                            .push(context, const OrderConfirmationScreen());
+                      if (snapshot.data["address"] == null) {
+                        Fluttertoast.showToast(msg: "Select an address first");
                       } else {
-                        Navigator.of(context, rootNavigator: true);
-                        Fluttertoast.showToast(msg: "Something went wrong");
+                        EssentialFunctions.loader(context);
+                        var res = await Api().createOrder(user.id.toString(),
+                            widget.ownerId, user.token.toString());
+                        if (res != false) {
+                          Navigator.of(context, rootNavigator: true).pop();
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                          KRoutes()
+                              .push(context, const OrderConfirmationScreen());
+                        } else {
+                          Navigator.of(context, rootNavigator: true);
+                          Fluttertoast.showToast(msg: "Something went wrong");
+                        }
                       }
                     },
                     color: kDarkPurple,

@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:store/Api/api.dart';
 import 'package:store/Screens/Cart/cart.dart';
+import 'package:store/provider/sub_category_provider.dart';
 import 'package:store/utils/app_routes.dart';
 import 'package:store/utils/colors.dart';
 import 'package:store/widgets/widgets.dart';
@@ -8,7 +11,7 @@ import 'package:store/widgets/widgets.dart';
 import '../../../widgets/HomeScreenWidgets/choices.dart';
 import '../../../widgets/HomeScreenWidgets/product_grid.dart';
 
-class DetailList extends StatelessWidget {
+class DetailList extends StatefulWidget {
   final Function future;
   final List? filterItemsList;
 
@@ -16,7 +19,13 @@ class DetailList extends StatelessWidget {
       : super(key: key);
 
   @override
+  State<DetailList> createState() => _DetailListState();
+}
+
+class _DetailListState extends State<DetailList> {
+  @override
   Widget build(BuildContext context) {
+    int selectedSubCategory = Provider.of<SubCategoryProvider>(context).id;
     return Scaffold(
       appBar: BaseAppBar(
           title: "Detail Page",
@@ -25,27 +34,35 @@ class DetailList extends StatelessWidget {
           widgets: [
             InkWell(
               onTap: () {
-                KRoutes().push(context, const Cart());
+                KRoutes().push(context, const Cart(backEnabled: true,));
               },
               child: Icon(
                 CupertinoIcons.cart,
                 color: kDarkPurple,
               ),
-            )
+            ),
           ],
           appBarHeight: 50),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           children: [
-            filterItems(filterItemsList ?? []),
+            filterItems(widget.filterItemsList ?? []),
             const SizedBox(
               height: 15,
             ),
             Expanded(
-                child: ProductGrid(
-              future: future,
-            )),
+                child: selectedSubCategory == -1
+                    ? ProductGrid(
+                        future: widget.future,
+                      )
+                    : selectedSubCategory == -2
+                        ? const Center(
+                            child: CircularProgressIndicator.adaptive())
+                        : ProductGrid(future: () async {
+                            return await Api()
+                                .getSubProducts(selectedSubCategory.toString());
+                          })),
             const SizedBox(
               height: 15,
             ),
@@ -61,6 +78,9 @@ class DetailList extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Choices(
             filters: filters,
+            changeState: () {
+              setState(() {});
+            },
           ));
     } else {
       return Container();

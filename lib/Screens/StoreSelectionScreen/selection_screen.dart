@@ -13,39 +13,45 @@ class StoreSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: BaseAppBar(
-          title: "Welcome",
-          appBar: AppBar(),
-          widgets: const [],
-          appBarHeight: 50),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  const CustomText(
+                    text: "Select the store where\n you want to shop",
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Column(
+                    children: allStores
+                        .map((e) => InkWell(
+                            onTap: () {
+                              Provider.of<StoreProvider>(context, listen: false)
+                                  .updateSelectedStore(e["name"]);
+                              kDarkPurple = e["color"];
+                              KRoutes().push(context, const CustomTabBar());
+                            },
+                            child: storeListBuilder(
+                                context, e["image"], e["name"])))
+                        .toList(),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
             ),
-            const CustomText(
-              text: "Select the store where\n you want to shop",
-              fontSize: 26,
-              fontWeight: FontWeight.w600,
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            Column(
-              children: allStores
-                  .map((e) => InkWell(
-                      onTap: () {
-                        Provider.of<StoreProvider>(context, listen: false)
-                            .updateSelectedStore(e["name"]);
-                        kDarkPurple = e["color"];
-                        KRoutes().push(context, const CustomTabBar());
-                      },
-                      child: storeListBuilder(context, e["image"], e["name"])))
-                  .toList(),
-            )
-          ],
+          ),
         ),
       ),
     );

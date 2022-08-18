@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:provider/provider.dart';
 import 'package:store/Api/api.dart';
 import 'package:store/Screens/HomePageScreens/Categories/categories_shimmer.dart';
+import 'package:store/provider/sub_category_provider.dart';
 import 'package:store/utils/colors.dart';
 import 'package:store/widgets/custom_app_bar.dart';
 import 'package:store/widgets/custom_text.dart';
 import 'package:store/widgets/search.dart';
 
-import '../../../utils/app_routes.dart';
 import '../DetailPage/detail_list.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -71,20 +72,27 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                   child: FadeInAnimation(
                                     child: InkWell(
                                       onTap: () {
-                                        KRoutes().push(
+                                        Navigator.push(
                                             context,
-                                            DetailList(
-                                              future: () async {
-                                                return await Api()
-                                                    .getCategoriesProducts(
-                                                        snapshot.data["data"]
-                                                                [index]["id"]
-                                                            .toString());
-                                              },
-                                              filterItemsList:
-                                                  snapshot.data["data"][index]
-                                                      ["sub_categories"],
-                                            ));
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DetailList(
+                                                      future: () async {
+                                                        return await Api()
+                                                            .getCategoriesProducts(
+                                                                snapshot.data[
+                                                                        "data"]
+                                                                        [index]
+                                                                        ["id"]
+                                                                    .toString());
+                                                      },
+                                                      filterItemsList: snapshot
+                                                                  .data["data"]
+                                                              [index]
+                                                          ["sub_categories"],
+                                                    ))).then((value) => context
+                                            .read<SubCategoryProvider>()
+                                            .resetSubCategory());
                                       },
                                       child: Container(
                                         padding: const EdgeInsets.all(5),

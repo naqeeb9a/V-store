@@ -57,6 +57,7 @@ class EssentialFunctions {
     CoolAlert.show(
         context: context,
         type: CoolAlertType.loading,
+        lottieAsset: "assets/loader.json",
         barrierDismissible: false);
   }
 }
